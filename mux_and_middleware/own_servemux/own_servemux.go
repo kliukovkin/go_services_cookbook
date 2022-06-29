@@ -1,4 +1,4 @@
-package own_servemux
+package main
 
 import (
 	"fmt"
