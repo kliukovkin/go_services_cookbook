@@ -1,4 +1,4 @@
-package main
+package RESTful_handler
 
 import "net/http"
 

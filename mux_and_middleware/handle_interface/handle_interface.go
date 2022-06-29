@@ -1,4 +1,4 @@
-package handle_interface
+package main
 
 import (
 	"fmt"
