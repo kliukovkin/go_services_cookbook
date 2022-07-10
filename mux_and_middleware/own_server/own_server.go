@@ -17,12 +17,6 @@ func main() {
 	srv := &http.Server{
 		Addr:    ":8000",
 		Handler: mux,
-		// ReadTimeout is the maximum duration for reading the entire
-		// request, including the body.
-		IdleTimeout: 1 * time.Second,
-		ReadTimeout: 1 * time.Second,
-		// WriteTimeout is the maximum duration before timing out
-		// writes of the response.
 		WriteTimeout: 1 * time.Second,
 	}
 	srv.ListenAndServe()
