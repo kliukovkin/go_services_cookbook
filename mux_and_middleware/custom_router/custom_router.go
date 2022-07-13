@@ -17,14 +17,14 @@ type router struct {
 }
 
 func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	foundRoute, exists := r.routes[urlPattern(req.URL.Path)]
+	foundPattern, exists := r.routes[urlPattern(req.URL.Path)]
 	if !exists {
 		http.NotFound(w, req)
 		return
 	}
-	handler, exists := foundRoute.methods[httpMethod(req.Method)]
+	handler, exists := foundPattern.methods[httpMethod(req.Method)]
 	if !exists {
-		notAllowed(w, req, foundRoute)
+		notAllowed(w, req, foundPattern)
 		return
 	}
 	handler.ServeHTTP(w, req)
