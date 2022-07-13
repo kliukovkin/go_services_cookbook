@@ -2,12 +2,13 @@ package main
 
 import (
 	"net/http"
+	 "github.com/gorilla/mux"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {}
 
-//func main() {
-//	mux := mux2.NewRouter()
-//	mux.HandleFunc("hui", handler).Methods()
-//	mux2.Vars()
-//}
+func main() {
+	r := mux.NewRouter()
+	r.HandleFunc("test", handler).Methods("GET")
+	mux.
+}
