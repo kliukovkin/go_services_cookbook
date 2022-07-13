@@ -6,49 +6,50 @@ import (
 )
 
 type httpMethod string
+type urlPattern string
 
 type routeRules struct {
 	methods map[httpMethod]http.Handler
 }
 
 type router struct {
-	routes map[string]routeRules
+	routes map[urlPattern]routeRules
 }
 
 func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	foundRoute, exists := r.routes[req.URL.Path]
-	if exists == false {
+	foundRoute, exists := r.routes[urlPattern(req.URL.Path)]
+	if !exists {
 		http.NotFound(w, req)
 		return
 	}
 	handler, exists := foundRoute.methods[httpMethod(req.Method)]
-	if exists == false {
+	if !exists {
 		notAllowed(w, req, foundRoute)
 		return
 	}
 	handler.ServeHTTP(w, req)
 }
 
-func (r *router) HandleFunc(method string, pattern string, f func(w http.ResponseWriter, req *http.Request)) {
+func (r *router) HandleFunc(method httpMethod, pattern urlPattern, f func(w http.ResponseWriter, req *http.Request)) {
 	rules, exists := r.routes[pattern]
-	if exists == false {
+	if !exists {
 		rules = routeRules{methods: make(map[httpMethod]http.Handler)}
 		r.routes[pattern] = rules
 	}
-	rules.methods[httpMethod(method)] = http.HandlerFunc(f)
+	rules.methods[method] = http.HandlerFunc(f)
 }
 
 func notAllowed(w http.ResponseWriter, req *http.Request, r routeRules) {
 	methods := make([]string, 1)
-	for k, _ := range r.methods {
+	for k := range r.methods {
 		methods = append(methods, string(k))
 	}
 	w.Header().Set("Allow", strings.Join(methods, " "))
-	http.Error(w, "Method Not Allowed", 405)
+	http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 }
 
 func New() *router {
-	return &router{routes: make(map[string]routeRules)}
+	return &router{routes: make(map[urlPattern]routeRules)}
 }
 
 func handler(w http.ResponseWriter, req *http.Request) {
@@ -57,7 +58,7 @@ func handler(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	r := New()
-	r.HandleFunc(http.MethodPost, "/test", handler)
+	r.HandleFunc(http.MethodGet, "/test", handler)
 	err := http.ListenAndServe(":8000", r)
 	if err != nil {
 		return
