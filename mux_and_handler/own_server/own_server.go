@@ -15,8 +15,8 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handler)
 	srv := &http.Server{
-		Addr:    ":8000",
-		Handler: mux,
+		Addr:         ":8000",
+		Handler:      mux,
 		WriteTimeout: 1 * time.Second,
 	}
 	srv.ListenAndServe()

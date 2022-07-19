@@ -13,10 +13,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	mux := http.NewServeMux()
-	mux.Handle("/", http.TimeoutHandler(http.HandlerFunc(handler), time.Second * 1, "Timeout"))
+	mux.Handle("/", http.TimeoutHandler(http.HandlerFunc(handler), time.Second*1, "Timeout"))
 	srv := &http.Server{
-		Addr:    ":8000",
-		Handler: mux,
+		Addr:         ":8000",
+		Handler:      mux,
 		WriteTimeout: 2 * time.Second,
 	}
 	srv.ListenAndServe()
